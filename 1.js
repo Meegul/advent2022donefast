@@ -7,6 +7,12 @@ const answer = (input) => {
         }, 0)
         return total;
     });
+    /* first part
+    return elvesTotals.reduce((best, curr) => {
+        return best < curr ? curr : best;
+    }, elvesTotals[0]);
+    */
+    // Second part
     const sorted = elvesTotals.sort((a, b) => a - b).reverse();
     const top3Total = sorted[0] + sorted[1] + sorted[2];
     return top3Total;
