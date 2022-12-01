@@ -1,7 +1,7 @@
 const answer = (input) => {
     const elves = input.split("\n\n");
-    const elvesTotals = elves.map((val) => {
-        const numbers = val.split("\n").map((number) => parseInt(number));
+    const elvesTotals = elves.map((elf) => {
+        const numbers = elf.split("\n").map((number) => parseInt(number));
         const total = numbers.reduce((total, cur) => {
             return total + cur;
         }, 0)
