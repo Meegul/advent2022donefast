@@ -1,8 +1,8 @@
 const parseCrates = (lines, numColumns, numCrates) => {
     //console.log(numCrates);
-    const crateArray = new Array(numCrates).fill([]);
+    const crateArray = new Array(numColumns).fill([]);
     for (let i = 0; i < crateArray.length; i++) {
-        crateArray[i] = new Array(numColumns);
+        crateArray[i] = [];
     }
     //console.log(crateArray);
 
@@ -14,7 +14,7 @@ const parseCrates = (lines, numColumns, numCrates) => {
             const char = line[j*4+1];
             //console.log(j*4+1, char)
             if (char !== ' ')
-                crateArray[i][j] = char;
+                crateArray[j].push(char);
         }
     }
     return crateArray;
@@ -23,11 +23,20 @@ const parseCrates = (lines, numColumns, numCrates) => {
 const moveCrates = (crateMatrix, commandLines) => {
     commandLines.forEach((command) => {
         const components = command.split(" ");
-        const quantity = parseInt(command[1]);
-        const from = parseInt(command[3]);
-        const to = parseInt(command[5]);
-
-        
+        const quantity = parseInt(components[1]);
+        const from = parseInt(components[3])-1;
+        const to = parseInt(components[5])-1;
+        //console.log(components);
+        let tmpMoveStack = [];
+        for (let i = 0; i < quantity; i++) {
+            const crate = crateMatrix[from].pop();
+            tmpMoveStack.push(crate);
+        }
+        tmpMoveStack = tmpMoveStack.reverse();
+        if (tmpMoveStack.length !== 0) {
+            crateMatrix[to].push(tmpMoveStack);
+            crateMatrix[to] = crateMatrix[to].flat();
+        }
     });
     return crateMatrix;
 };
@@ -36,13 +45,9 @@ const getTopOfStacks = (crateArray, numColumns) => {
     const tops = new Array(numColumns);
 
     for (i = 0; i < crateArray.length; i++) {
-        const crateRow = crateArray[0];
-        for (j = 0; j < numColumns; j++) {
-            const char = crateArray[i][j];
-            if (char !== undefined) tops[j] = char;
-        }
+        tops.push(crateArray[i].pop());
     }
-    return tops.join();
+    return tops.join("");
 }
 
 const sol = (input) => {
@@ -63,25 +68,19 @@ const sol = (input) => {
             break;
         }
     }
-    //console.log(delimiterLineIndex);
     const crateLines = lines.slice(0, delimiterLineIndex-1);
-    //console.log(crateLines)
     const commandLines = lines.slice(delimiterLineIndex+1);
     const crateMatrix = parseCrates(crateLines.reverse(), numColumns, totalNumCrates);
     
-    console.log(crateMatrix);
     
     const updatedCrates = moveCrates(crateMatrix, commandLines);
     const topString = getTopOfStacks(updatedCrates, numColumns);
     
-    //console.log(topString);
+    console.log(topString);
 };
 
 const sol2 = () => {return};
 
-// 3 + 1 + 3 + 1 + 3 = length
-// numColumns * 3 + (numColumns - 1) = length
-// numColumns=(length+1)/4
 sol(`    [D]    
 [N] [C]    
 [Z] [M] [P]
@@ -92,18 +91,8 @@ move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2`)
 
-sol(`        [Z]
-        [N]
-        [D]
-[C] [M] [P]
- 1   2   3
 
-move 1 from 2 to 1
-move 3 from 1 to 3
-move 2 from 2 to 1
-move 1 from 1 to 2`)
-
-sol2(
+sol(
 `            [J] [Z] [G]            
             [Z] [T] [S] [P] [R]    
 [R]         [Q] [V] [B] [G] [J]    
