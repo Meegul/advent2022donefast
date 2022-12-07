@@ -13,6 +13,7 @@ const getTypeScore = (play) => {
     }
     return -999999;
 }
+
 const calcWinScoreForB = (playA, playB) => {
     const WIN = 6;
     const DRAW = 3;
